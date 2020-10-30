@@ -1,13 +1,6 @@
 ;; the kilo editor
 
-(defpackage taylr
-  (:use #:cl #:cl-charms))
-
-(in-package #:taylr)
-
-(ql:quickload '(cl-charms bordeaux-threads alexandria))
-(ql:quickload '(cl-charms-paint cl-charms-timer) :silent t)
-
+(in-package :gmacs)
 
 (defmacro with-mode-setup (bindings &body body)
   "enable & disable echoing and raw mode"
@@ -19,19 +12,26 @@
        ,@body)))
 
 
-(defun start-editor ()
+(defun run (file)
   "this is the entry-point of the editor"
   (with-mode-setup
       ((scr (make-window
              (max-x *standard-window*)
              (max-y *standard-window*)
              0 0))
-       (buffer '("madhu" "vamsi" "surisetti")))
-    (display-buffer
+       (buffer (lines file))
+       (offset 0))
+    (display-frame
      (fill-empty-lines scr buffer)
      scr)
-    (get-char scr)
+    (awhile (get-char scr)
+      (cond ((eql it +down+)
+             (incf offset))
+            ((eql it +up+)
+             (decf offset)))
+      (display-frame
+              (fill-empty-lines scr buffer)
+              scr
+              :offset offset))
     (clear-window scr)
     (refresh-window scr)))
-
-(start-editor)

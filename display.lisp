@@ -1,7 +1,7 @@
 ;; all these functions act on buffer
 ;; refresh screen to see those changes
 
-(in-package #:taylr)
+(in-package :gmacs)
 
 (defun nx (n item)                      ; (nx 4 1) => '(1 1 1 1)
   "return a list with n items"
@@ -34,15 +34,18 @@
 (defun fill-empty-lines (window buffer)
   "write the empty lines with ~ (like vim does)"
   (let ((empty-rows (count-empty-rows window buffer))
-        (tilde '("~")))
+        (tilde "~"))
     (if empty-rows                  ; unless there are no empty rows
-        buffer
-        (append buffer (nx empty-rows tilde)))))
+        (print (append buffer (nx empty-rows tilde)))
+        buffer)))
 
-(defun display-buffer (buffer window)
+(defun display-frame (buffer window &key (offset 0))
   "render the buffer to terminal"
-  (let ((row 0))
+  (let ((row -1)
+        (scr-height (max-y window))
+        (buf-len (length buffer)))
     (mapcar #'(lambda (line)
-                (write-string-at-point window line 0 row))
-            buffer)
+                (print row)
+                (write-string-at-point window line 0 (incf row)))
+            (subseq buffer offset 8))
     (refresh-window window)))
