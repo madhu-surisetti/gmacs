@@ -12,7 +12,7 @@
 
 (defun window-limits (window)           ; (window-limits *standard-window*) => '(max-x max-y)
   (multiple-value-bind (width height)
-      (charms:window-dimensions window)
+      (window-dimensions window)
     (list width height)))
 
 (defun max-x (window)

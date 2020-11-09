@@ -28,10 +28,14 @@
       (cond ((eql it +down+)
              (incf offset))
             ((eql it +up+)
-             (decf offset)))
+             (decf offset))
+            ((eql it +ctrl-q+)
+             (return-from run)))
       (display-frame
               (fill-empty-lines scr buffer)
               scr
               :offset offset))
     (clear-window scr)
     (refresh-window scr)))
+
+(run "~/aws.txt")
